@@ -1,6 +1,6 @@
 {
-  "started": null,
-  "last_heartbeat": null,
+  "started": "2026-03-25T15:31:29.700514",
+  "last_heartbeat": "2026-03-25T16:05:20.148878",
   "last_email_check": null,
   "emails_processed": 0,
   "tasks_completed": 0,
