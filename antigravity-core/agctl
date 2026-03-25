@@ -1,0 +1,62 @@
+#!/bin/bash
+# Antigravity Core Manager
+
+CORE_DIR="/home/samarth_amin/.openclaw/workspace/antigravity-core"
+CORE_SCRIPT="$CORE_DIR/core.py"
+PID_FILE="$CORE_DIR/antigravity.pid"
+
+start() {
+    if [ -f "$PID_FILE" ]; then
+        PID=$(cat "$PID_FILE")
+        if ps -p $PID > /dev/null 2>&1; then
+            echo "⚠️  Already running (PID: $PID)"
+            return 1
+        fi
+    fi
+
+    echo "🦾 Starting Antigravity Core..."
+    nohup python3 "$CORE_SCRIPT" > /dev/null 2>&1 &
+    echo $! > "$PID_FILE"
+    echo "✅ Started (PID: $(cat $PID_FILE))"
+}
+
+stop() {
+    if [ -f "$PID_FILE" ]; then
+        PID=$(cat "$PID_FILE")
+        if ps -p $PID > /dev/null 2>&1; then
+            echo "🛑 Stopping Antigravity Core..."
+            kill $PID 2>/dev/null
+            rm "$PID_FILE"
+            echo "✅ Stopped"
+        else
+            echo "⚠️  Not running (stale PID file)"
+            rm "$PID_FILE"
+        fi
+    else
+        echo "⚠️  Not running"
+    fi
+}
+
+status() {
+    python3 "$CORE_DIR/status.py"
+}
+
+logs() {
+    if [ -f "$CORE_DIR/activity.log" ]; then
+        tail -f "$CORE_DIR/activity.log"
+    else
+        echo "No logs yet"
+    fi
+}
+
+case "$1" in
+    start)   start ;;
+    stop)    stop ;;
+    restart) stop; sleep 2; start ;;
+    status)  status ;;
+    logs)    logs ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|status|logs}"
+        exit 1
+        ;;
+esac

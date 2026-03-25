@@ -1,0 +1,14 @@
+[Unit]
+Description=Antigravity AI Core
+After=network.target
+
+[Service]
+Type=simple
+User=samarth_amin
+WorkingDirectory=/home/samarth_amin/.openclaw/workspace/antigravity-core
+ExecStart=/usr/bin/python3 /home/samarth_amin/.openclaw/workspace/antigravity-core/core.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
