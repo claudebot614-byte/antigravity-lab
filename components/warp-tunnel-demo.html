@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volumetric Warp Tunnel | Antigravity Portfolio</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      overflow: hidden;
+      background: #000508;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .ui-overlay {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      color: #fff;
+      text-align: center;
+    }
+    
+    .progress-bar {
+      width: 300px;
+      height: 4px;
+      background: rgba(0, 102, 255, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #0066FF, #00AAFF);
+      border-radius: 2px;
+      transition: width 0.1s ease;
+    }
+    
+    .progress-text {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    
+    .title {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      color: #fff;
+      font-size: 14px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      text-shadow: 0 0 20px rgba(0, 102, 255, 0.8);
+    }
+    
+    .hint {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 1px;
+    }
+    
+    /* Neural Core Label */
+    .core-label {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 50;
+      color: #0066FF;
+      font-size: 24px;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      text-shadow: 0 0 30px rgba(0, 102, 255, 1);
+      pointer-events: none;
+    }
+    
+    .core-label.visible {
+      opacity: 1;
+    }
+  </style>
+  
+  <!-- Import Map for ES Modules -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  
+  <div class="title">Antigravity · Volumetric Warp Tunnel</div>
+  
+  <div class="ui-overlay">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="progress-text">
+      <span id="progress-text">0%</span> · Depth <span id="depth-text">500</span> units
+    </div>
+    <div class="hint">Scroll or drag to navigate the tunnel</div>
+  </div>
+  
+  <div class="core-label" id="core-label">Neural Core</div>
+  
+  <script type="module">
+    import { VolumetricWarpTunnel } from './VolumetricWarpTunnel.js';
+    
+    // Initialize tunnel
+    const container = document.getElementById('canvas-container');
+    const tunnel = new VolumetricWarpTunnel(container);
+    
+    // UI Elements
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
+    const depthText = document.getElementById('depth-text');
+    const coreLabel = document.getElementById('core-label');
+    
+    // Scroll handling
+    let targetProgress = 0;
+    let currentProgress = 0;
+    let isDragging = false;
+    let startY = 0;
+    let startProgress = 0;
+    
+    // Mouse wheel
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      targetProgress += e.deltaY * 0.0003;
+      targetProgress = Math.max(0, Math.min(1, targetProgress));
+    }, { passive: false });
+    
+    // Touch/mouse drag
+    container.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startY = e.clientY;
+      startProgress = targetProgress;
+      container.style.cursor = 'grabbing';
+    });
+    
+    container.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const deltaY = e.clientY - startY;
+      targetProgress = startProgress + deltaY * 0.002;
+      targetProgress = Math.max(0, Math.min(1, targetProgress));
+    });
+    
+    container.addEventListener('mouseup', () => {
+      isDragging = false;
+      container.style.cursor = 'grab';
+    });
+    
+    container.addEventListener('mouseleave', () => {
+      isDragging = false;
+      container.style.cursor = 'grab';
+    });
+    
+    // Touch support
+    container.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      startY = e.touches[0].clientY;
+      startProgress = targetProgress;
+    });
+    
+    container.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const deltaY = e.touches[0].clientY - startY;
+      targetProgress = startProgress + deltaY * 0.003;
+      targetProgress = Math.max(0, Math.min(1, targetProgress));
+    });
+    
+    container.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        targetProgress = Math.min(1, targetProgress + 0.05);
+      } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        targetProgress = Math.max(0, targetProgress - 0.05);
+      } else if (e.key === 'Home') {
+        targetProgress = 0;
+      } else if (e.key === 'End') {
+        targetProgress = 1;
+      }
+    });
+    
+    // Smooth interpolation
+    function updateUI() {
+      // Smooth interpolation to target
+      currentProgress += (targetProgress - currentProgress) * 0.1;
+      
+      // Update tunnel camera
+      tunnel.scrollTo(currentProgress);
+      
+      // Update UI
+      const percentage = Math.round(currentProgress * 100);
+      const depth = Math.round(500 - currentProgress * 500);
+      
+      progressFill.style.width = `${percentage}%`;
+      progressText.textContent = `${percentage}%`;
+      depthText.textContent = depth;
+      
+      // Show core label near end
+      if (currentProgress > 0.85) {
+        coreLabel.classList.add('visible');
+      } else {
+        coreLabel.classList.remove('visible');
+      }
+      
+      requestAnimationFrame(updateUI);
+    }
+    
+    updateUI();
+    
+    // Set initial cursor
+    container.style.cursor = 'grab';
+    
+    // Expose for debugging
+    window.tunnel = tunnel;
+    window.scrollToProgress = (p) => {
+      targetProgress = Math.max(0, Math.min(1, p));
+    };
+  </script>
+</body>
+</html>

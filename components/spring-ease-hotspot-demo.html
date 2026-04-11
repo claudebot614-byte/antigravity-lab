@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring-Ease Hotspot UI | Antigravity Showcase</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #030303;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #fff;
+        }
+        
+        /* Center Model Container (Three.js Integration Point) */
+        .center-model {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .center-model__shape {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.1), rgba(191, 90, 242, 0.1));
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: rotate3d 20s linear infinite;
+            position: relative;
+        }
+        
+        .center-model__shape::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            right: 10%;
+            bottom: 10%;
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            border-radius: 50%;
+            animation: rotate3d 15s linear infinite reverse;
+        }
+        
+        .center-model__shape::after {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            right: 20%;
+            bottom: 20%;
+            background: radial-gradient(circle, rgba(0, 242, 255, 0.2), transparent);
+            border-radius: 50%;
+        }
+        
+        @keyframes rotate3d {
+            from { transform: rotateX(0deg) rotateY(0deg); }
+            to { transform: rotateX(360deg) rotateY(360deg); }
+        }
+        
+        .center-model__label {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'SF Mono', monospace;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+        
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 24px 40px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(3, 3, 3, 0.8), transparent);
+        }
+        
+        .logo {
+            font-family: 'SF Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+        
+        .logo span {
+            color: #00f2ff;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .status__dot {
+            width: 6px;
+            height: 6px;
+            background: #30d158;
+            border-radius: 50%;
+            animation: status-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes status-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 24px 40px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to top, rgba(3, 3, 3, 0.8), transparent);
+        }
+        
+        .footer__coords {
+            font-family: 'SF Mono', monospace;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .footer__controls {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .footer__btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'SF Mono', monospace;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 200ms ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .footer__btn:hover {
+            background: rgba(0, 242, 255, 0.1);
+            border-color: rgba(0, 242, 255, 0.3);
+            color: #00f2ff;
+        }
+        
+        /* Title Overlay */
+        .title-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0;
+            animation: title-fade 2s ease-out 0.5s forwards;
+        }
+        
+        @keyframes title-fade {
+            to { opacity: 1; }
+        }
+        
+        .title-overlay__main {
+            font-size: 64px;
+            font-weight: 600;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.6) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+        
+        .title-overlay__sub {
+            font-family: 'SF Mono', monospace;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+        
+        /* Mouse follower */
+        .mouse-follower {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 1px solid rgba(0, 242, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 100ms ease-out, width 200ms ease, height 200ms ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .mouse-follower--hover {
+            width: 40px;
+            height: 40px;
+            border-color: #00f2ff;
+        }
+        
+        /* Info panel */
+        .info-panel {
+            position: fixed;
+            bottom: 80px;
+            left: 40px;
+            z-index: 1000;
+        }
+        
+        .info-panel__item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-family: 'SF Mono', monospace;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .info-panel__key {
+            color: rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+        }
+        
+        .info-panel__value {
+            color: #00f2ff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">ANTI<span>GRAVITY</span></div>
+        <div class="status">
+            <div class="status__dot"></div>
+            <span>System Online</span>
+        </div>
+    </header>
+    
+    <!-- Title Overlay -->
+    <div class="title-overlay">
+        <h1 class="title-overlay__main">Spring-Ease Hotspot</h1>
+        <p class="title-overlay__sub">Interactive UI Module</p>
+    </div>
+    
+    <!-- Center Model (Three.js Integration Point) -->
+    <div class="center-model">
+        <div class="center-model__shape"></div>
+        <div class="center-model__label">Three.js Model Anchor</div>
+    </div>
+    
+    <!-- Info Panel -->
+    <div class="info-panel">
+        <div class="info-panel__item">
+            <span class="info-panel__key">Particles</span>
+            <span class="info-panel__value" id="particle-count">3500</span>
+        </div>
+        <div class="info-panel__item">
+            <span class="info-panel__key">Hotspots</span>
+            <span class="info-panel__value">5</span>
+        </div>
+        <div class="info-panel__item">
+            <span class="info-panel__key">FPS</span>
+            <span class="info-panel__value" id="fps-counter">60</span>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__coords" id="coords">X: 0.00 Y: 0.00</div>
+        <div class="footer__controls">
+            <button class="footer__btn" id="burst-btn">Burst Effect</button>
+            <button class="footer__btn" id="reset-btn">Reset</button>
+        </div>
+    </footer>
+    
+    <!-- Mouse Follower -->
+    <div class="mouse-follower" id="mouse-follower"></div>
+    
+    <!-- Component Scripts -->
+    <script type="module">
+        import { SpringEaseHotspot, ParticleParallax } from './index.js';
+        
+        // ============================================
+        // Initialize Particle Background
+        // ============================================
+        
+        const particles = new ParticleParallax({
+            particleCount: 3500,
+            springStrength: 0.06
+        });
+        
+        // ============================================
+        // Initialize Hotspots
+        // ============================================
+        
+        const hotspots = new SpringEaseHotspot();
+        
+        // ============================================
+        // Mouse Follower
+        // ============================================
+        
+        const mouseFollower = document.getElementById('mouse-follower');
+        let mouseX = 0, mouseY = 0;
+        let followerX = 0, followerY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Update coords display
+            const normalizedX = (e.clientX / window.innerWidth).toFixed(2);
+            const normalizedY = (e.clientY / window.innerHeight).toFixed(2);
+            document.getElementById('coords').textContent = `X: ${normalizedX} Y: ${normalizedY}`;
+        });
+        
+        function updateFollower() {
+            const springFactor = 0.15;
+            followerX += (mouseX - followerX) * springFactor;
+            followerY += (mouseY - followerY) * springFactor;
+            
+            mouseFollower.style.left = `${followerX}px`;
+            mouseFollower.style.top = `${followerY}px`;
+            
+            requestAnimationFrame(updateFollower);
+        }
+        updateFollower();
+        
+        // Hover detection
+        document.querySelectorAll('.seh-hotspot').forEach(hotspot => {
+            hotspot.addEventListener('mouseenter', () => {
+                mouseFollower.classList.add('mouse-follower--hover');
+            });
+            hotspot.addEventListener('mouseleave', () => {
+                mouseFollower.classList.remove('mouse-follower--hover');
+            });
+        });
+        
+        // ============================================
+        // FPS Counter
+        // ============================================
+        
+        let frameCount = 0;
+        let lastTime = performance.now();
+        const fpsElement = document.getElementById('fps-counter');
+        
+        function updateFPS() {
+            frameCount++;
+            const now = performance.now();
+            
+            if (now - lastTime >= 1000) {
+                fpsElement.textContent = frameCount;
+                frameCount = 0;
+                lastTime = now;
+            }
+            
+            requestAnimationFrame(updateFPS);
+        }
+        updateFPS();
+        
+        // ============================================
+        // Button Controls
+        // ============================================
+        
+        document.getElementById('burst-btn').addEventListener('click', () => {
+            // Trigger burst effect at center
+            particles.burst(0.5, 0.5, 80);
+        });
+        
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            // Reset mouse position
+            particles.setMousePosition(0.5, 0.5);
+        });
+        
+        // ============================================
+        // Event Listeners
+        // ============================================
+        
+        document.getElementById('seh-hotspot-container').addEventListener('seh:show', (e) => {
+            console.log('Hotspot activated:', e.detail.id, e.detail.data);
+        });
+        
+        document.getElementById('seh-hotspot-container').addEventListener('seh:hide', (e) => {
+            console.log('Hotspot deactivated:', e.detail.id);
+        });
+        
+        // ============================================
+        // Demo: Dynamic Telemetry Update
+        // ============================================
+        
+        setInterval(() => {
+            // Randomly update one hotspot's telemetry
+            const ids = ['neural-core', 'quantum-sync', 'data-stream', 'security-layer', 'power-matrix'];
+            const randomId = ids[Math.floor(Math.random() * ids.length)];
+            const randomPercentage = 60 + Math.floor(Math.random() * 40);
+            hotspots.updateTelemetry(randomId, randomPercentage);
+        }, 2000);
+        
+        console.log(`
+╔═══════════════════════════════════════════════════════════════╗
+║         SPRING-EASE HOTSPOT UI - ANTIGRAVITY SHOWCASE         ║
+╠═══════════════════════════════════════════════════════════════╣
+║  Features:                                                    ║
+║  • 5 interactive hotspot markers (1.5x scale on hover)        ║
+║  • Glassmorphic info cards (backdrop-filter: blur(20px))      ║
+║  • 300ms spring-ease transition                               ║
+║  • Animated telemetry bars with gradient filling              ║
+║  • 3500+ particle background with mouse parallax              ║
+║                                                               ║
+║  Integration:                                                 ║
+║  • hotspots.getThreePositions() - Get positions for Three.js  ║
+║  • hotspots.syncWithThree(id, pos) - Sync with Three.js model ║
+║  • particles.setMousePosition(x, y) - Manual mouse control    ║
+╚═══════════════════════════════════════════════════════════════╝
+        `);
+    </script>
+</body>
+</html>

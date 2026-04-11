@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechSpecCard Demo - Antigravity Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020202;
+            --cyan: #00f2ff;
+            --red: #ff0000;
+            --white: #fff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .demo-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--cyan), var(--red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .demo-subtitle {
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .skill-card {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            background: rgba(10, 10, 10, 0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .skill-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-4px);
+        }
+
+        .skill-card:hover::before {
+            opacity: 1;
+        }
+
+        .skill-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-desc {
+            font-size: 0.7rem;
+            opacity: 0.5;
+            line-height: 1.5;
+        }
+
+        .skill-badge {
+            display: inline-block;
+            font-size: 0.55rem;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--red);
+            color: var(--red);
+            margin-top: 1rem;
+            text-transform: uppercase;
+        }
+
+        /* Animation for skill cards */
+        .skill-card {
+            animation: cardFadeIn 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .skill-card:nth-child(1) { animation-delay: 0.1s; }
+        .skill-card:nth-child(2) { animation-delay: 0.2s; }
+        .skill-card:nth-child(3) { animation-delay: 0.3s; }
+        .skill-card:nth-child(4) { animation-delay: 0.4s; }
+        .skill-card:nth-child(5) { animation-delay: 0.5s; }
+        .skill-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .instructions {
+            margin-top: 4rem;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(10, 10, 10, 0.5);
+        }
+
+        .instructions h3 {
+            color: var(--cyan);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .instructions p {
+            font-size: 0.75rem;
+            opacity: 0.6;
+            line-height: 1.8;
+        }
+
+        .instructions code {
+            background: rgba(0, 242, 255, 0.1);
+            padding: 0.2rem 0.5rem;
+            color: var(--cyan);
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <header class="demo-header">
+            <h1 class="demo-title">TechSpecCard</h1>
+            <p class="demo-subtitle">Technical Specification Card Component // Antigravity Portfolio</p>
+        </header>
+
+        <div class="skill-grid">
+            <div class="skill-card" data-skill="pytorch">
+                <div class="skill-name">PyTorch</div>
+                <div class="skill-desc">Deep learning framework for neural network architecture and training</div>
+                <span class="skill-badge">Elite Tier</span>
+            </div>
+
+            <div class="skill-card" data-skill="nextjs">
+                <div class="skill-name">Next.js</div>
+                <div class="skill-desc">React framework for production-grade web applications</div>
+                <span class="skill-badge">Elite Tier</span>
+            </div>
+
+            <div class="skill-card" data-skill="kubernetes">
+                <div class="skill-name">Kubernetes</div>
+                <div class="skill-desc">Container orchestration platform for cloud-native deployments</div>
+                <span class="skill-badge">Advanced</span>
+            </div>
+
+            <div class="skill-card" data-skill="fastapi">
+                <div class="skill-name">FastAPI</div>
+                <div class="skill-desc">High-performance Python API framework with async support</div>
+                <span class="skill-badge">Advanced</span>
+            </div>
+
+            <div class="skill-card" data-skill="threejs">
+                <div class="skill-name">Three.js</div>
+                <div class="skill-desc">WebGL library for 3D graphics and immersive experiences</div>
+                <span class="skill-badge">Advanced</span>
+            </div>
+
+            <div class="skill-card" data-skill="postgresql">
+                <div class="skill-name">PostgreSQL</div>
+                <div class="skill-desc">Advanced relational database with JSON and full-text search</div>
+                <span class="skill-badge">Proficient</span>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>Usage Instructions</h3>
+            <p>
+                Click any skill card to open the Technical Specification panel. 
+                The panel slides in from the right with a spring animation featuring:
+            </p>
+            <p style="margin-top: 1rem;">
+                • <strong>NothingDot font</strong> for the skill title<br>
+                • <strong>Red/Cyan gradient</strong> mastery bar with animated fill<br>
+                • <strong>Detail grid</strong> showing sync status, domain, and priority<br>
+                • <strong>Sub-skills matrix</strong> displaying related technologies<br>
+                • <strong>Initialize Project</strong> button with glitch effect on hover<br>
+                • <strong>Brutalist edges</strong> using clip-path<br>
+                • <strong>Blurred glass</strong> background with backdrop-filter
+            </p>
+            <p style="margin-top: 1rem;">
+                Import: <code>import { TechSpecCard } from './TechSpecCard.js';</code><br>
+                Initialize: <code>const specCard = new TechSpecCard();</code><br>
+                Show: <code>specCard.show(skillData);</code>
+            </p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { TechSpecCard } from './TechSpecCard.js';
+
+        // Initialize the component
+        const specCard = new TechSpecCard();
+
+        // Skill data definitions
+        const skillDataMap = {
+            pytorch: {
+                title: 'PyTorch',
+                description: 'Elite-tier mastery of deep learning frameworks. Proficient in custom neural architecture design, automatic differentiation, and GPU-accelerated training pipelines. Extensive experience with transformer models, CNNs, and reinforcement learning systems.',
+                mastery: 94,
+                details: {
+                    'Sync Status': 'ACTIVE',
+                    'Log ID': 'PY-7842',
+                    'Domain': 'Deep Learning',
+                    'Priority': 'CRITICAL',
+                    'Version': '2.1+',
+                    'GPU Support': 'CUDA 12'
+                },
+                subskills: ['Tensor Operations', 'Autograd', 'nn.Module', 'DataLoader', 'Distributed Training', 'JIT Compiler', 'ONNX Export', 'Quantization'],
+                onInit: (skill) => {
+                    console.log('Initializing PyTorch project:', skill);
+                    alert('PyTorch project initialized! Check console for details.');
+                }
+            },
+            nextjs: {
+                title: 'Next.js',
+                description: 'Full-stack React framework mastery with expertise in server-side rendering, static generation, and API routes. Advanced knowledge of the App Router, middleware, and edge runtime deployment.',
+                mastery: 91,
+                details: {
+                    'Sync Status': 'ACTIVE',
+                    'Log ID': 'NX-3201',
+                    'Domain': 'Web Framework',
+                    'Priority': 'HIGH',
+                    'Version': '14+',
+                    'Deploy Target': 'Vercel'
+                },
+                subskills: ['App Router', 'Server Actions', 'ISR', 'Edge Middleware', 'Image Optimization', 'Turbopack', 'API Routes', 'Streaming'],
+                onInit: (skill) => {
+                    console.log('Initializing Next.js project:', skill);
+                    alert('Next.js project initialized! Check console for details.');
+                }
+            },
+            kubernetes: {
+                title: 'Kubernetes',
+                description: 'Container orchestration expertise covering cluster management, deployment strategies, and service mesh integration. Proficient in Helm chart development and GitOps workflows.',
+                mastery: 85,
+                details: {
+                    'Sync Status': 'ACTIVE',
+                    'Log ID': 'K8-5521',
+                    'Domain': 'DevOps',
+                    'Priority': 'HIGH',
+                    'Version': '1.28+',
+                    'Platform': 'Multi-cloud'
+                },
+                subskills: ['Deployments', 'Services', 'Ingress', 'Helm', 'Operators', 'RBAC', 'HPA', 'Service Mesh'],
+                onInit: (skill) => {
+                    console.log('Initializing Kubernetes deployment:', skill);
+                    alert('Kubernetes deployment initiated! Check console for details.');
+                }
+            },
+            fastapi: {
+                title: 'FastAPI',
+                description: 'High-performance Python API development with automatic OpenAPI documentation. Expertise in async/await patterns, dependency injection, and WebSocket integration.',
+                mastery: 88,
+                details: {
+                    'Sync Status': 'ACTIVE',
+                    'Log ID': 'FA-9012',
+                    'Domain': 'Backend',
+                    'Priority': 'HIGH',
+                    'Version': '0.104+',
+                    'Async': 'Enabled'
+                },
+                subskills: ['Path Operations', 'Pydantic', 'Dependency Injection', 'Background Tasks', 'WebSockets', 'Testing', 'OAuth2', 'Middleware'],
+                onInit: (skill) => {
+                    console.log('Initializing FastAPI project:', skill);
+                    alert('FastAPI project initialized! Check console for details.');
+                }
+            },
+            threejs: {
+                title: 'Three.js',
+                description: 'WebGL-based 3D graphics library mastery for immersive web experiences. Proficient in shader programming, animation systems, and performance optimization.',
+                mastery: 82,
+                details: {
+                    'Sync Status': 'ACTIVE',
+                    'Log ID': 'TJ-4456',
+                    'Domain': 'Graphics',
+                    'Priority': 'MEDIUM',
+                    'Version': '0.160+',
+                    'Renderer': 'WebGL2'
+                },
+                subskills: ['Scene Graph', 'Materials', 'Shaders', 'Animation', 'Physics', 'Post-processing', 'GLTF Loader', 'OrbitControls'],
+                onInit: (skill) => {
+                    console.log('Initializing Three.js scene:', skill);
+                    alert('Three.js scene initialized! Check console for details.');
+                }
+            },
+            postgresql: {
+                title: 'PostgreSQL',
+                description: 'Advanced relational database expertise with focus on query optimization, indexing strategies, and JSON/JSONB operations. Experience with replication and partitioning.',
+                mastery: 79,
+                details: {
+                    'Sync Status': 'ACTIVE',
+                    'Log ID': 'PG-2341',
+                    'Domain': 'Database',
+                    'Priority': 'MEDIUM',
+                    'Version': '16+',
+                    'Extensions': 'PostGIS'
+                },
+                subskills: ['Query Optimization', 'Indexing', 'JSONB', 'PL/pgSQL', 'Partitioning', 'Replication', 'Full-text Search', 'Migration'],
+                onInit: (skill) => {
+                    console.log('Initializing PostgreSQL schema:', skill);
+                    alert('PostgreSQL schema initialized! Check console for details.');
+                }
+            }
+        };
+
+        // Bind click events to skill cards
+        document.querySelectorAll('.skill-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const skillKey = card.dataset.skill;
+                const skillData = skillDataMap[skillKey];
+                if (skillData) {
+                    specCard.show(skillData);
+                }
+            });
+        });
+
+        // Listen for init events
+        document.addEventListener('tsc:init', (e) => {
+            console.log('TSC Init Event:', e.detail);
+        });
+    </script>
+</body>
+</html>
